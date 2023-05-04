@@ -1,24 +1,19 @@
 <?php
-namespace Pixiekat\FhirGenomexBundle\EventSubscriber;
+namespace Pixiekat\FhirGenomexBundle\DependencyInjection;
 
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\ResponseEvent;
-use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Extension\Extension;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
-class ResponseSubscriber implements EventSubscriberInterface
+/**
+ * SecurityHeadersExtension
+ */
+class SecurityHeadersExtension extends Extension
 {
-  public static function getSubscribedEvents()
-  {
-    return [
-      KernelEvents::RESPONSE => [
-        ['addSecurityHeaders', 0],
-      ],
-    ];
-  }
-  
-  public function addSecurityHeaders(ResponseEvent $event)
-  {
-    $response = $event->getResponse();
-    $response->headers->set('X-Header-Set-By', 'FhirGenomexBundle');
-  }
+    public function load(array $configs, ContainerBuilder $container)
+    {
+        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader->load('services.yaml');
+    }
 }
